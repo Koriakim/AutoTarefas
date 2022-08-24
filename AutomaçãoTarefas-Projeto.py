@@ -12,16 +12,17 @@ def bem_vindo():
 =================================Desenvolvido por: Tiago Nascimento Moreira====================""")
 
 
-def menu():
+def menu():  # Acessa o menu principal das funções
 
     print('')
 
+    pt.alert("Extremamente recomendado configurar os logins antes de executar as tarefas!!!")
+
     print("""Lista de tarefas:
     1- Configurar Logins;
-    2- Login "WMS";
+    2- Login WMS;
     3- Extração de relatorio;
     9- Sair;
-    10- Teste Again;
     """)
 
     print('')
@@ -30,22 +31,20 @@ def menu():
     if esc == "1":
         return conf_login()
     elif esc == "2":
-        return login_software()
+        return menu_wms()
     elif esc == "3":
         return extrac()
     elif esc == "9":
-        print("Encerrando..."), time.sleep(3), exit()
-    elif esc == "10":
-        return again()
+        print("Encerrando..."), time.sleep(2), exit()
     elif esc:
         print("Escolha a opção correta"), menu()
 
 
-def conf_login():
+def conf_login():  # Menu para configurar o login para acessar o WMS e o Site PWA
     global login_WMS
     global senha_WMS
-    global login_site
-    global senha_site
+    global login_SITE
+    global senha_SITE
 
     print("""Configurar Login:
     1- WMS;
@@ -53,15 +52,15 @@ def conf_login():
     3- Voltar;
     """)
 
-    esc_login = input("Insira a tarefa a ser executada: ")
+    esc_login = input("Insira a opção de configuração: ")
     if esc_login == "1":
         login_WMS = input("Insira Login: ")
         senha_WMS = input("Insira a senha: ")
-        time.sleep(3), print("Login e Senha salvos com sucesso!!!")
+        time.sleep(1.5), print("Login e Senha salvos com sucesso!!!")
     elif esc_login == "2":
-        login_site = input("Insira Login: ")
-        senha_site = input("Insira senha: ")
-        time.sleep(3), print("Login e Senha salvos com sucesso!!!")
+        login_SITE = input("Insira Login: ")
+        senha_SITE = input("Insira senha: ")
+        time.sleep(1.5), print("Login e Senha salvos com sucesso!!!")
     elif esc_login == "3":
         return menu()
 
@@ -94,24 +93,75 @@ def extrac():
         print("Escolha a opção correta"), extrac()
 
 
-def login_software():
+def menu_wms():
 
     print('')
 
-    pt.alert("Insira o seu login corretamente para executar com exito a tarefa")
+    print(""" Escolha o sistema WMS que deseja entrar:
+    1- Configurar atalho WMS 
+    2- Homologado ( Versão teste );
+    3- Produção ( Versão não teste );
+    4- Voltar.
+    """)
 
-    site = input("Insira o site: ")
+    esc = input("Insira a tarefa a ser executada: ")
+    if esc == "1":
+        return config_wms()
+    elif esc == "2":
+        return wms_homologado()
+    elif esc == "3":
+        return wms_produ()
+    elif esc == "4":
+        return menu()
+    elif esc:
+        print("Escolha a opção correta"), menu_wms()
+
+
+def config_wms():
+    global sis_homolog
+    global sis_produ
 
     print('')
 
-    sis = 'sistema.wms'
+    pt.alert("""Importante colocar o atalho do WMS na area de trabalho e renomear para facil identificação. Exemplo:
+    Para o sistema homologado: WMS-Homologação.jnlp
+    Para o sistema de produção: WMS-Produção.jnlp""")
+
+    print("""Escolha qual sistema deseja configurar o atalho: 
+    1- Homologação;
+    2- Produção;
+    3- Voltar.
+    """)
+
+    esc = input("Insira a tarefa a executar: ")
+    if esc == "1":
+        sis_homolog = input("Insira o nome do atalho do WMS homologado: ")
+        time.sleep(1.5), print("Salvo com sucesso!!!")
+    elif esc == "2":
+        sis_produ = input("Insira o nome do atalho do WMS produção:")
+        time.sleep(1.5), print("Salvo com sucesso!!!")
+    elif esc == "3":
+        return menu_wms()
+    elif esc:
+        print("Insira a opção correta."), time.sleep(1.5), conf_login()
+
+    config_wms()
+
+
+def wms_homologado():
+
+    print('')
+
+    site = input("Insira a filial: ")
+
+    print('')
 
     pt.alert("Ira iniciar a tarefa, não mexa em nada...")
 
     # Abrir o sistema
     pt.hotkey('winleft')
 
-    pyp.copy(sis)
+    pyp.copy(sis_homolog)
 
     pt.hotkey('ctrl', 'v')
 
@@ -148,6 +198,61 @@ def login_software():
 
     pt.alert('FIM TAREFA!!!')
 
+    menu_wms()
+
+
+def wms_produ():
+
+    print('')
+
+    site = input("Insira a filial: ")
+
+    print('')
+
+    pt.alert("Ira iniciar a tarefa, não mexa em nada...")
+
+    # Abrir o sistema
+    pt.hotkey('winleft')
+
+    pyp.copy(sis_produ)
+
+    pt.hotkey('ctrl', 'v')
+
+    pt.hotkey('enter')
+
+    time.sleep(10)
+
+    pt.click(683, 672)
+
+    pt.click(1117, 675)
+
+    time.sleep(5)
+
+    # 'Logar' no sistema com "Login" e "Senha"
+    pyp.copy(login_WMS)
+
+    pt.hotkey('ctrl', 'v')
+
+    pt.hotkey('tab')
+
+    pyp.copy(senha_WMS)
+
+    pt.hotkey('ctrl', 'v')
+
+    pt.hotkey('tab')
+
+    pyp.copy(site)
+
+    pt.hotkey('ctrl', 'v')
+
+    pt.hotkey('tab')
+
+    pt.hotkey('enter')
+
+    pt.alert('FIM TAREFA!!!')
+
+    menu_wms()
+
 
 def rel_portaria():
 
@@ -178,13 +283,13 @@ def rel_portaria():
     time.sleep(10)
 
     # Entrar no sistema com "Login" e "Senha"
-    pyp.copy(login_site)
+    pyp.copy(login_SITE)
 
     pt.hotkey('ctrl', 'v')
 
     pt.hotkey('tab')
 
-    pyp.copy(senha_site)
+    pyp.copy(senha_SITE)
 
     pt.hotkey('ctrl', 'v')
 
@@ -207,7 +312,7 @@ def rel_portaria():
 
     pt.alert("Tarefa finalizada!")
 
-    again()
+    extrac()
 
 
 def rel_expedicao():
@@ -238,13 +343,13 @@ def rel_expedicao():
     time.sleep(10)
 
     # Entrar no sistema com "Login" e "Senha"
-    pyp.copy(login_site)
+    pyp.copy(login_SITE)
 
     pt.hotkey('ctrl', 'v')
 
     pt.hotkey('tab')
 
-    pyp.copy(senha_site)
+    pyp.copy(senha_SITE)
 
     pt.hotkey('ctrl', 'v')
 
@@ -270,7 +375,7 @@ def rel_expedicao():
 
     pt.alert('Tarefa finalizada com sucesso!!!')
 
-    again()
+    extrac()
 
 
 def rel_recebimento():
@@ -279,7 +384,6 @@ def rel_recebimento():
     pt.alert("Ira iniciar a tarefa, não mexa em nada...")
 
     link = ''
-
     # Abrir o navegador
     pt.hotkey('winleft')
 
@@ -301,13 +405,13 @@ def rel_recebimento():
     time.sleep(10)
 
     # Entrar no sistema com "Login" e "Senha"
-    pyp.copy(login_site)
+    pyp.copy(login_SITE)
 
     pt.hotkey('ctrl', 'v')
 
     pt.hotkey('tab')
 
-    pyp.copy(senha_site)
+    pyp.copy(senha_SITE)
 
     pt.hotkey('ctrl', 'v')
 
@@ -333,7 +437,7 @@ def rel_recebimento():
 
     pt.alert('Tarefa finalizada!!!')
 
-    again()
+    extrac()
 
 
 def again():
